@@ -1,0 +1,45 @@
+.containerStyles {
+  border: 1px solid #eee;
+  border-radius: 3;
+  background-color: #6abfb3;
+  margin: 10;
+  height: 250;
+}
+.topBarStyles {
+  border: 1px solid #eee;
+  border-radius: 3;
+  background-color: #6abfbe;
+  padding: 3px 0px;
+  margin: 10;
+}
+.textContainer {
+  border-radius: 3;
+  padding: 10px 50px;
+  margin: 20px 50px;
+  height: 100px;
+};
+.textHeaderStyles {
+  font-weight: 700;
+}
+.textBodyStyles {
+  font-weight: 400;
+  margin-top: 10px;
+}
+.buttonStyle {
+  border: 1px solid #b4c0c5;
+  border-radius: 4px;
+  margin-top: 20px;
+  width: 150px;
+  text-align: center;
+  height: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.buttonTextStyle {
+  display: 'inline-block';
+  vertical-align: 'middle';
+}
+.buttonHoverStyle {
+  color: 'red';
+}
