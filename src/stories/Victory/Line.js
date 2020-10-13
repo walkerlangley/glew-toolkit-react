@@ -1,13 +1,25 @@
 import React, { useState } from 'react';
 import {
   VictoryLine,
-  VictoryScatter,
-  VictoryChart, VictoryTheme,
+  VictoryLabel,
+  // VictoryScatter,
+  VictoryChart,
+  VictoryTheme,
   VictoryLegend,
   VictoryAxis,
   VictoryTooltip,
   VictoryVoronoiContainer
 } from 'victory';
+
+// const curData = [
+//   { x: 'jan 1 2020', y: 4000, label: 4000 },
+//   { x: 'jan 15 2020', y: 3000, label: 3000},
+//   { x: 'feb 1 2020', y: 2000, label: 2000},
+//   { x: 'feb 15 2020', y: 2780, label: 2780},
+//   { x: 'mar 1 2020', y: 1890, label: 1890},
+//   { x: 'mar 15 2020', y: 2390, label: 2390},
+//   { x: 'apr 1 2020', y: 3490, label: 3490},
+// ];
 
 const curData = [
   { x: 'Jan 1 2020', y: 4000, },
@@ -38,6 +50,67 @@ const strokeDasharray = "10, 5";
 const strokeLinecap = "round";
 const strokeLinejoin = "round";
 
+// class CustomFlyout extends React.Component {
+  const CustomFlyout = ({ x, y, datum, dx, dy }) => {
+    return (
+  // render() {
+    // const {x, y, dx, dy, orientation} = this.props;
+    // const newY = orientation === "bottom" ? y - 35 : y + 35;
+    // console.log('Propr: ', this.props)
+    // return (
+      <g>
+        <rect
+          x={x + 25}
+          y={y - 15}
+          width="50"
+          dx={dx}
+          dy={dy}
+          height="30"
+          rx="1.5"
+          fill="white"
+          stroke="#868C97"
+          stroke-width="0.3"
+        />
+        <rect
+          x={x + 25}
+          y={y - 15}
+          width="50"
+          dx={dx}
+          dy={dy}
+          height="10"
+          rx="1.5"
+          fill="#f3f4f7"
+          stroke="#868C97"
+          stroke-width="0.3"
+        />
+        <line
+          x1={x + 25}
+          y1={y - 5}
+          x2={x + 75}
+          y2={y - 5}
+          stroke="#868C97"
+          stroke-width="0.3"
+        />
+        <text
+          x={x + 43}
+          y={y - 8}
+          fontSize="5"
+          fontWeight="bold"
+          fill="#596e79"
+        >
+          Details
+        </text>
+      </g>
+      // <g>
+      //   <circle cx={x} cy={newY} r="20" stroke="tomato" fill="none"/>
+      //   <circle cx={x} cy={newY} r="25" stroke="orange" fill="none"/>
+      //   <circle cx={x} cy={newY} r="30" stroke="gold" fill="none"/>
+      // </g>
+    );
+  // }
+}
+
+
 /**
  * Primary UI component for user interaction
  */
@@ -47,7 +120,6 @@ export const VictoryLineChart = () => {
       previous: true,
     })
     const toggleLines = key => {
-      console.log('Key: ', key)
       const newState = {
         ...lineState,
         [key]: !lineState[key]
@@ -65,25 +137,44 @@ export const VictoryLineChart = () => {
         containerComponent={
           <VictoryVoronoiContainer
             // mouseFollowTooltips
-            height={200}
-            // voronoiDimension="x"
+            // height={200}
+            voronoiDimension="x"
+            voronoiPadding={50}
             labels={({ datum }) => {
               // This was duplicating due to line and scatter plot
-              // Will want to redo this with custom Clyout Component
+              // If using labelComponent, I think you have to use label, which sucks
+              // because I can't see to style these data points
               return /(line)/.test(datum.childName)
                 ? `${datum.x}: ${datum.y}`
                 : null
             }}
             labelComponent={
               <VictoryTooltip
-                constrainToVisibleArea
-                cornerRadius={0}
-                flyoutStyle={{
-                  fill: 'white'
-                }}
+                cornerRadius={2}
+                flyoutComponent={<CustomFlyout/>}
+                // // dx={50}
+                // // dy={18}
+                // // constrainToVisibleArea
+                // // cornerRadius={0}
+                // horizontal={true}
+                // flyoutStyle={{
+                //   stroke: "#8EA2AC",
+                //   fill: 'white',
+                //   strokeWidth: 0.3
+                // }}
                 style={{
-                  fontSize: 4
+                  fontSize: 4,
+                  color: '#596e79'
+                  // marginLeft: 30,
+                  // transform: `translate(${50}px, ${30}px)`
                 }}
+                // labelComponent={<CustomFlyout />}
+                labelComponent={
+                  <VictoryLabel
+                    dx={50}
+                    dy={5}
+                    />
+                }
                />
             }
           />
@@ -103,7 +194,6 @@ export const VictoryLineChart = () => {
                 {
                   target: "data",
                   mutation: (props) => {
-                    console.log('Props: ', props)
                     const line = props.datum.name;
                     toggleLines(line.toLowerCase())
                   }
@@ -165,14 +255,9 @@ export const VictoryLineChart = () => {
             parent: { border: "1px solid #ccc"}
           }}
           data={curData}
-          // labels={({ datum }) => datum.y}
-          // labelComponent={
-          //   <VictoryTooltip
-          //   />
-          // }
         />
         }
-        { lineState.current &&
+        {/* { lineState.current &&
           <VictoryScatter
             data={curData}
             size={1}
@@ -181,8 +266,10 @@ export const VictoryLineChart = () => {
                 fill: "#4887fc"
               }
             }}
+            labels={({ datum }) => datum.y}
+            labelComponent={<VictoryTooltip/>}
           />
-        }
+        } */}
         { lineState.previous &&
         <VictoryLine
           style={{
@@ -193,11 +280,9 @@ export const VictoryLineChart = () => {
             parent: { border: "1px solid #ccc"}
           }}
           data={prevData}
-          // labels={({ datum }) => datum.y}
-          // labelComponent={<VictoryTooltip /> }
         />
         }
-        { lineState.previous &&
+        {/* { lineState.previous &&
           <VictoryScatter
             data={prevData}
             size={1}
@@ -208,8 +293,7 @@ export const VictoryLineChart = () => {
               }
             }}
           />
-
-        }
+        } */}
       </VictoryChart>
     );
   }
